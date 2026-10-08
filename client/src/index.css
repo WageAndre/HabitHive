@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink-950: #061521;
+  --color-ink-900: #0a1e2e;
+  --color-ink-800: #102a3d;
+  --color-ink-700: #173950;
+  --color-honey-300: #ffd66b;
+  --color-honey-400: #ffc247;
+  --color-honey-500: #f5ad22;
+  --color-honey-600: #d98b0b;
+  --color-violet-400: #9b7cf8;
+  --color-violet-500: #7c5ce5;
+  --color-success-400: #45d58a;
+  --color-success-500: #20b96d;
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --shadow-panel: 0 18px 45px rgb(3 16 26 / 0.12);
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { min-width: 320px; background: #f3f7fa; }
+  body { margin: 0; min-width: 320px; min-height: 100vh; color: #102a3d; background: #f3f7fa; }
+  button, input, select, textarea { font: inherit; }
+  button, a { -webkit-tap-highlight-color: transparent; }
+  button:not(:disabled), [role="button"]:not([aria-disabled="true"]) { cursor: pointer; }
+  :focus-visible { outline: 3px solid rgb(245 173 34 / 0.45); outline-offset: 2px; }
+}
+
+@layer components {
+  .panel { @apply rounded-2xl border border-slate-200/80 bg-white shadow-panel; }
+  .panel-pad { @apply rounded-2xl border border-slate-200/80 bg-white p-5 shadow-panel sm:p-6; }
+  .label { @apply mb-2 block text-sm font-semibold text-slate-700; }
+  .input { @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 transition focus:border-honey-500 focus:ring-4 focus:ring-honey-500/10 focus:outline-none; }
+  .select { @apply w-full appearance-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 transition focus:border-honey-500 focus:ring-4 focus:ring-honey-500/10 focus:outline-none; }
+  .textarea { @apply min-h-28 w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 transition focus:border-honey-500 focus:ring-4 focus:ring-honey-500/10 focus:outline-none; }
+  .field-error { @apply mt-1.5 text-sm font-medium text-rose-600; }
+  .btn { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-honey-500 px-4 py-2.5 text-sm font-bold text-ink-950 shadow-md shadow-honey-500/20 transition hover:bg-honey-400 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-dark { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-ink-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-ink-800 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-secondary { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-danger { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-rose-50 px-4 py-2.5 text-sm font-bold text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-50; }
+  .eyebrow { @apply text-xs font-extrabold tracking-[0.16em] text-honey-600 uppercase; }
+  .page-title { @apply text-2xl font-extrabold tracking-tight text-ink-900 sm:text-3xl; }
+  .badge { @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold; }
+  .skeleton { @apply animate-pulse rounded-xl bg-slate-200; }
+}
+
+.honeycomb-bg {
+  background-image:
+    radial-gradient(circle at 80% 15%, rgb(245 173 34 / 0.14), transparent 24rem),
+    radial-gradient(circle at 15% 80%, rgb(124 92 229 / 0.12), transparent 28rem);
+}
+
+.hex-mark { clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0 50%); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
