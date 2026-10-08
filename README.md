@@ -4,9 +4,9 @@ HabitHive is a full-stack habit and progress tracking system for connected coach
 
 ## Group members
 
-- Wage, Andre Neal— Implemented The Database connections and backend.
-- De Leon, Nico Emmanuel — contribution summary
-- Manzano, Keith Patrick — contribution summary
+- Wage, Andre Neal
+- De Leon, Nico Emmanuel
+- Manzano, Keith Patrick
 
 ## What the application processes
 
