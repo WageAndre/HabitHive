@@ -136,81 +136,6 @@ All protected routes use `Authorization: Bearer <token>`. Errors consistently re
 | GET | `/api/analytics/leaderboard` | Rank a coach's trainees by consistency |
 | GET | `/api/health` | Verify that the API is running |
 
-### Sample requests and responses
-
-Register:
-
-```json
-POST /api/auth/register
-{
-  "name": "Alex Rivera",
-  "email": "alex@example.com",
-  "password": "StrongPass123!",
-  "role": "trainee"
-}
-```
-
-```json
-201 Created
-{
-  "token": "<jwt>",
-  "user": {
-    "_id": "<user-id>",
-    "name": "Alex Rivera",
-    "email": "alex@example.com",
-    "role": "trainee"
-  }
-}
-```
-
-Create a check-in:
-
-```json
-POST /api/check-ins
-{
-  "habitId": "<habit-id>",
-  "date": "2026-10-08",
-  "status": "completed",
-  "value": 20,
-  "note": "Completed before breakfast."
-}
-```
-
-Overview response:
-
-```json
-200 OK
-{
-  "overview": {
-    "activeHabits": 4,
-    "today": { "scheduled": 4, "completed": 3, "rate": 75 },
-    "week": { "scheduled": 26, "completed": 22, "rate": 85 },
-    "currentStreak": 7,
-    "longestStreak": 12
-  }
-}
-```
-
-Validation error:
-
-```json
-400 Bad Request
-{
-  "message": "Validation failed",
-  "details": [{ "field": "title", "message": "Habit title is required" }]
-}
-```
-
-## Verification
-
-```bash
-npm run lint
-npm run build
-npm test
-```
-
-The test suite covers analytics calculations, health and JSON 404 behavior, plus the complete account → invitation → assignment → check-in → analytics workflow against an isolated MongoDB instance.
-
 ## Screenshots
 
 ### Landing page — desktop
@@ -225,7 +150,6 @@ The test suite covers analytics calculations, health and JSON 404 behavior, plus
 
 ![HabitHive login screen](docs/screenshots/login-desktop.png)
 
-Add dashboard screenshots after connecting and seeding Atlas so the final documentation uses live application data.
 
 ## Known limitations
 
