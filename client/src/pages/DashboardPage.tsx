@@ -1,4 +1,4 @@
-import { Activity, CheckCircle2, Flame, Goal, Handshake, Plus, Trophy, Users } from 'lucide-react'
+import { Activity, CheckCircle2, Flame, Goal, Handshake, Plus, Trophy, Users, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -61,6 +61,10 @@ function TraineeDashboard() {
     try { await api.patch(`/relationships/${id}/accept`); toast.success('Coach connected'); await query.reload() }
     catch (error) { toast.error(getErrorMessage(error)) }
   }
+  const cancelInvitation = async (id: string) => {
+    try { await api.patch(`/relationships/${id}/archive`); toast.success('Invitation canceled'); await query.reload() }
+    catch (error) { toast.error(getErrorMessage(error)) }
+  }
 
   return (
     <>
@@ -70,7 +74,7 @@ function TraineeDashboard() {
         description="Your routine is ready. Focus on the next small win."
         action={<Link className="btn-primary" to="/habits/new"><Plus className="h-4 w-4" /> Add habit</Link>}
       />
-      {invitations.map((invitation) => <section key={invitation._id} className="mb-6 flex flex-col gap-4 rounded-2xl border border-violet-200 bg-violet-50 p-5 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-violet-500 text-white"><Handshake /></span><div><h2 className="font-extrabold text-ink-900">Coach invitation from {invitation.coach.name}</h2><p className="mt-1 text-sm text-slate-600">Accept to let this coach assign habits and review your progress.</p></div></div><button className="btn-dark shrink-0" onClick={() => void acceptInvitation(invitation._id)}>Accept invitation</button></section>)}
+      {invitations.map((invitation) => <section key={invitation._id} className="mb-6 flex flex-col gap-4 rounded-2xl border border-violet-200 bg-violet-50 p-5 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-violet-500 text-white"><Handshake /></span><div><h2 className="font-extrabold text-ink-900">Coach invitation from {invitation.coach.name}</h2><p className="mt-1 text-sm text-slate-600">Accept to let this coach assign habits and review your progress.</p></div></div><div className="flex shrink-0 flex-col gap-2 sm:flex-row"><button className="btn-secondary" onClick={() => void cancelInvitation(invitation._id)}><X className="h-4 w-4" /> Cancel invitation</button><button className="btn-dark" onClick={() => void acceptInvitation(invitation._id)}>Accept invitation</button></div></section>)}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Progress summary">
         <StatCard label="Current streak" value={`${overview.currentStreak} days`} detail={`Best: ${overview.longestStreak} days`} icon={Flame} tone="amber" />
         <StatCard label="Today" value={`${overview.today.completed}/${overview.today.scheduled}`} detail={`${overview.today.rate}% complete`} icon={CheckCircle2} tone="emerald" />
