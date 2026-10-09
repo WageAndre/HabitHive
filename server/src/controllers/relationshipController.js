@@ -26,8 +26,15 @@ export async function inviteTrainee(request, response) {
   if (!trainee) throw new AppError('No trainee account uses that email address', 404);
   if (trainee._id.equals(request.user._id)) throw new AppError('You cannot invite yourself', 400);
   const existing = await CoachRelationship.findOne({ coach: request.user._id, trainee: trainee._id });
-  if (existing) throw new AppError('A relationship with this trainee already exists', 400);
-  const relationship = await CoachRelationship.create({ coach: request.user._id, trainee: trainee._id });
+  if (existing && existing.status !== 'archived') {
+    throw new AppError('A relationship with this trainee already exists', 400);
+  }
+
+  const relationship = existing || new CoachRelationship({ coach: request.user._id, trainee: trainee._id });
+  relationship.status = 'pending';
+  relationship.startedAt = null;
+  relationship.archivedAt = null;
+  await relationship.save();
   await relationship.populate([
     { path: 'coach', select: 'name email avatarColor bio' },
     { path: 'trainee', select: 'name email avatarColor bio' },

@@ -73,4 +73,19 @@ test('coach and trainee can complete the core HabitHive workflow', async () => {
     .send({ traineeId: traineeRegistration.body.user._id, title: 'Not allowed' })
     .expect(403);
   assert.match(forbidden.body.message, /permission/i);
+
+  await request(app)
+    .patch(`/api/relationships/${invitation.body.relationship._id}/archive`)
+    .set('Authorization', `Bearer ${coachToken}`)
+    .expect(200);
+
+  const repeatedInvitation = await request(app)
+    .post('/api/relationships')
+    .set('Authorization', `Bearer ${coachToken}`)
+    .send({ traineeEmail: 'trainee@example.test' })
+    .expect(201);
+  assert.equal(repeatedInvitation.body.relationship._id, invitation.body.relationship._id);
+  assert.equal(repeatedInvitation.body.relationship.status, 'pending');
+  assert.equal(repeatedInvitation.body.relationship.startedAt, null);
+  assert.equal(repeatedInvitation.body.relationship.archivedAt, null);
 });
