@@ -1,4 +1,4 @@
-import { Activity, CheckCircle2, Flame, Goal, Handshake, Plus, Trophy, Users, X } from 'lucide-react'
+import { Activity, CheckCircle2, Flame, Goal, Handshake, Plus, Trophy, UserRoundCheck, Users, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -19,6 +19,7 @@ interface TraineeDashboardData {
   days: WeeklyDay[]
   habits: Habit[]
   invitations: Relationship[]
+  coachRelationship: Relationship | null
 }
 
 interface LeaderboardItem {
@@ -45,18 +46,25 @@ export function DashboardPage() {
 function TraineeDashboard() {
   const { user } = useAuth()
   const query = useApi<TraineeDashboardData>(async () => {
-    const [overview, weekly, habits, invitations] = await Promise.all([
+    const [overview, weekly, habits, invitations, coach] = await Promise.all([
       api.get<{ overview: Overview }>('/analytics/overview'),
       api.get<{ days: WeeklyDay[] }>('/analytics/weekly'),
       api.get<{ habits: Habit[] }>('/habits?active=true'),
       api.get<{ relationships: Relationship[] }>('/relationships?status=pending'),
+      api.get<{ relationship: Relationship | null }>('/users/trainee-coach'),
     ])
-    return { overview: overview.data.overview, days: weekly.data.days, habits: habits.data.habits, invitations: invitations.data.relationships }
+    return {
+      overview: overview.data.overview,
+      days: weekly.data.days,
+      habits: habits.data.habits,
+      invitations: invitations.data.relationships,
+      coachRelationship: coach.data.relationship,
+    }
   }, [user?._id])
 
   if (query.loading) return <LoadingState label="Calculating your progress…" />
   if (query.error || !query.data) return <ErrorState message={query.error} onRetry={query.reload} />
-  const { overview, days, habits, invitations } = query.data
+  const { overview, days, habits, invitations, coachRelationship } = query.data
   const acceptInvitation = async (id: string) => {
     try { await api.patch(`/relationships/${id}/accept`); toast.success('Coach connected'); await query.reload() }
     catch (error) { toast.error(getErrorMessage(error)) }
@@ -75,6 +83,18 @@ function TraineeDashboard() {
         action={<Link className="btn-primary" to="/habits/new"><Plus className="h-4 w-4" /> Add habit</Link>}
       />
       {invitations.map((invitation) => <section key={invitation._id} className="mb-6 flex flex-col gap-4 rounded-2xl border border-violet-200 bg-violet-50 p-5 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-violet-500 text-white"><Handshake /></span><div><h2 className="font-extrabold text-ink-900">Coach invitation from {invitation.coach.name}</h2><p className="mt-1 text-sm text-slate-600">Accept to let this coach assign habits and review your progress.</p></div></div><div className="flex shrink-0 flex-col gap-2 sm:flex-row"><button className="btn-secondary" onClick={() => void cancelInvitation(invitation._id)}><X className="h-4 w-4" /> Cancel invitation</button><button className="btn-dark" onClick={() => void acceptInvitation(invitation._id)}>Accept invitation</button></div></section>)}
+      <section className={`panel-pad mb-6 flex flex-col gap-4 sm:flex-row sm:items-center ${coachRelationship ? 'border-emerald-200 bg-emerald-50/50' : ''}`} aria-label="Coach status">
+        <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${coachRelationship ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-500'}`}><UserRoundCheck className="h-6 w-6" /></span>
+        {coachRelationship ? (
+          <>
+            <Avatar name={coachRelationship.coach.name} color={coachRelationship.coach.avatarColor} className="h-12 w-12" />
+            <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h2 className="font-extrabold text-ink-900">{coachRelationship.coach.name}</h2><span className="badge bg-emerald-100 text-emerald-700">Active coach</span></div><p className="truncate text-sm text-slate-500">{coachRelationship.coach.email}</p><p className="mt-1 text-sm text-slate-600">{coachRelationship.coach.bio || 'Your coach can assign habits and review your progress.'}</p></div>
+            {coachRelationship.startedAt && <p className="shrink-0 text-xs font-semibold text-slate-500">Connected since {formatDate(coachRelationship.startedAt)}</p>}
+          </>
+        ) : (
+          <div><div className="flex flex-wrap items-center gap-2"><h2 className="font-extrabold text-ink-900">No active coach</h2><span className="badge bg-slate-100 text-slate-600">Not connected</span></div><p className="mt-1 text-sm text-slate-600">{invitations.length ? 'Accept a pending invitation above to connect with a coach.' : 'Ask a coach to invite you using the email address on your HabitHive account.'}</p></div>
+        )}
+      </section>
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Progress summary">
         <StatCard label="Current streak" value={`${overview.currentStreak} days`} detail={`Best: ${overview.longestStreak} days`} icon={Flame} tone="amber" />
         <StatCard label="Today" value={`${overview.today.completed}/${overview.today.scheduled}`} detail={`${overview.today.rate}% complete`} icon={CheckCircle2} tone="emerald" />
