@@ -39,6 +39,11 @@ interface CoachDashboardData {
 }
 
 const dashboardDate = new Date()
+const leaderboardRankStyles: Record<number, string> = {
+  1: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
+  2: 'bg-slate-200 text-slate-700 ring-1 ring-slate-300',
+  3: 'bg-orange-100 text-orange-700 ring-1 ring-orange-200',
+}
 
 export function DashboardPage() {
   const { user } = useAuth()
@@ -166,7 +171,7 @@ function CoachDashboard() {
           <div className="mb-5"><h2 className="text-lg font-extrabold text-ink-900">Weekly leaderboard</h2><p className="text-sm text-slate-500">Ranked by scheduled-habit completion</p></div>
           {leaderboard.length === 0 ? <EmptyState title="No active trainees yet" description="Invite a trainee to start building a shared coaching workspace." action={<Link to="/trainees" className="btn-primary">Invite trainee</Link>} /> : (
             <div className="space-y-3">
-              {leaderboard.map((item) => <Link key={item.trainee._id} to={`/trainees/${item.trainee._id}`} className="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-honey-500"><span className="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-sm font-black text-slate-600">{item.rank}</span><div className="flex min-w-0 items-center gap-3"><Avatar name={item.trainee.name} color={item.trainee.avatarColor} /><div className="min-w-0"><p className="truncate font-extrabold text-ink-900">{item.trainee.name}</p><p className="text-sm text-slate-500">{item.currentStreak}-day streak · {item.activeHabits} habits</p></div></div><div className="text-right"><p className="text-xl font-black text-ink-900">{item.week.rate}%</p><p className="text-xs font-bold text-slate-400">this week</p></div></Link>)}
+              {leaderboard.map((item) => <Link key={item.trainee._id} to={`/trainees/${item.trainee._id}`} className="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-honey-500"><span className={`grid h-8 w-8 place-items-center rounded-lg text-sm font-black ${leaderboardRankStyles[item.rank] ?? 'bg-slate-100 text-slate-600'}`}>{item.rank}</span><div className="flex min-w-0 items-center gap-3"><Avatar name={item.trainee.name} color={item.trainee.avatarColor} /><div className="min-w-0"><p className="truncate font-extrabold text-ink-900">{item.trainee.name}</p><p className="text-sm text-slate-500">{item.currentStreak}-day streak · {item.activeHabits} habits</p></div></div><div className="text-right"><p className="text-xl font-black text-ink-900">{item.week.rate}%</p><p className="text-xs font-bold text-slate-400">this week</p></div></Link>)}
             </div>
           )}
         </article>
