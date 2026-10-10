@@ -117,7 +117,7 @@ function TraineeDashboard() {
           </div>
         </article>
 
-        <article className="panel-pad flex flex-col items-center justify-center text-center">
+        <article className="panel-pad flex flex-col items-center justify-center bg-gradient-to-br from-white via-violet-50/70 to-honey-500/10 text-center">
           <p className="eyebrow">Today’s progress</p>
           <div className="my-5"><ProgressRing value={overview.today.rate} size={136} /></div>
           <h2 className="text-xl font-black text-ink-900">{overview.today.completed === overview.today.scheduled && overview.today.scheduled > 0 ? 'Daily rhythm complete' : `${Math.max(0, overview.today.scheduled - overview.today.completed)} habits left`}</h2>
