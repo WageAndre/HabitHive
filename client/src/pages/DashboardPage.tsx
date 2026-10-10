@@ -1,8 +1,10 @@
-import { Activity, CheckCircle2, Flame, Goal, Handshake, Plus, Trophy, UserRoundCheck, Users, X } from 'lucide-react'
+import { Activity, CheckCircle2, Flame, Goal, Plus, Trophy, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { Avatar } from '../components/Avatar'
+import { CoachInvitationCard } from '../components/CoachInvitationCard'
+import { CoachStatusCard } from '../components/CoachStatusCard'
 import { EmptyState, ErrorState, LoadingState } from '../components/Feedback'
 import { PageHeader } from '../components/PageHeader'
 import { ProgressRing } from '../components/ProgressRing'
@@ -82,19 +84,15 @@ function TraineeDashboard() {
         description="Your routine is ready. Focus on the next small win."
         action={<Link className="btn-primary" to="/habits/new"><Plus className="h-4 w-4" /> Add habit</Link>}
       />
-      {invitations.map((invitation) => <section key={invitation._id} className="mb-6 flex flex-col gap-4 rounded-2xl border border-violet-200 bg-violet-50 p-5 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-violet-500 text-white"><Handshake /></span><div><h2 className="font-extrabold text-ink-900">Coach invitation from {invitation.coach.name}</h2><p className="mt-1 text-sm text-slate-600">Accept to let this coach assign habits and review your progress.</p></div></div><div className="flex shrink-0 flex-col gap-2 sm:flex-row"><button className="btn-secondary" onClick={() => void cancelInvitation(invitation._id)}><X className="h-4 w-4" /> Cancel invitation</button><button className="btn-dark" onClick={() => void acceptInvitation(invitation._id)}>Accept invitation</button></div></section>)}
-      <section className={`panel-pad mb-6 flex flex-col gap-4 sm:flex-row sm:items-center ${coachRelationship ? 'border-emerald-200 bg-emerald-50/50' : ''}`} aria-label="Coach status">
-        <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${coachRelationship ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-500'}`}><UserRoundCheck className="h-6 w-6" /></span>
-        {coachRelationship ? (
-          <>
-            <Avatar name={coachRelationship.coach.name} color={coachRelationship.coach.avatarColor} className="h-12 w-12" />
-            <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h2 className="font-extrabold text-ink-900">{coachRelationship.coach.name}</h2><span className="badge bg-emerald-100 text-emerald-700">Active coach</span></div><p className="truncate text-sm text-slate-500">{coachRelationship.coach.email}</p><p className="mt-1 text-sm text-slate-600">{coachRelationship.coach.bio || 'Your coach can assign habits and review your progress.'}</p></div>
-            {coachRelationship.startedAt && <p className="shrink-0 text-xs font-semibold text-slate-500">Connected since {formatDate(coachRelationship.startedAt)}</p>}
-          </>
-        ) : (
-          <div><div className="flex flex-wrap items-center gap-2"><h2 className="font-extrabold text-ink-900">No active coach</h2><span className="badge bg-slate-100 text-slate-600">Not connected</span></div><p className="mt-1 text-sm text-slate-600">{invitations.length ? 'Accept a pending invitation above to connect with a coach.' : 'Ask a coach to invite you using the email address on your HabitHive account.'}</p></div>
-        )}
-      </section>
+      {invitations.map((invitation) => (
+        <CoachInvitationCard
+          key={invitation._id}
+          invitation={invitation}
+          onAccept={acceptInvitation}
+          onCancel={cancelInvitation}
+        />
+      ))}
+      <CoachStatusCard relationship={coachRelationship} hasPendingInvitation={invitations.length > 0} />
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Progress summary">
         <StatCard label="Current streak" value={`${overview.currentStreak} days`} detail={`Best: ${overview.longestStreak} days`} icon={Flame} tone="amber" />
         <StatCard label="Today" value={`${overview.today.completed}/${overview.today.scheduled}`} detail={`${overview.today.rate}% complete`} icon={CheckCircle2} tone="emerald" />
