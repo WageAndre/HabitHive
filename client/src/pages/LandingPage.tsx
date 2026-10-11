@@ -21,7 +21,7 @@ export function LandingPage() {
           <div className="relative z-10 min-w-0">
             <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-honey-500/30 bg-honey-500/10 px-3 py-1.5 text-sm font-bold text-honey-300"><Sparkles className="h-4 w-4" /> Progress grows better together</p>
             <h1 className="max-w-3xl text-5xl leading-[1.02] font-black tracking-[-0.045em] sm:text-6xl lg:text-7xl">Habits with direction.<br /><span className="text-honey-500">Progress you can prove.</span></h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">HabitHive gives trainees a clear daily rhythm and gives coaches the evidence they need to guide, adjust, and celebrate real consistency.</p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">HabitHive builds daily rhythm for trainees and gives coaches the real-time proof to guide, adjust, and celebrate genuine progress.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/register" className="btn-primary px-6">Start building habits <ArrowRight className="h-4 w-4" /></Link>
               <Link to="/login" className="btn border border-white/15 px-6 text-white hover:bg-white/10">Use a demo account</Link>
