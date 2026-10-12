@@ -4,9 +4,9 @@ HabitHive is a full-stack habit and progress tracking system for connected coach
 
 ## Group members
 
-- Wage, Andre Neal
-- De Leon, Nico Emmanuel
-- Manzano, Keith Patrick
+- Wage, Andre Neal - Developed the full-stack foundation, backend API, database models, authentication, analytics, testing, and documentation. 
+- De Leon, Nico Emmanuel - Improved the dashboards, habit cards, trainee leaderboard, and overall UI consistency.
+- Manzano, Keith Patrick - Refined the responsive design, mobile layouts, visual styling, and frontend usability.
 
 ## What the application processes
 
